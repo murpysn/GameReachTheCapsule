@@ -4,14 +4,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
-public class move : MonoBehaviour
+
+
+public class moveFinal : MonoBehaviour
 {
-    //untuk move
-    public float jump;
+    // Start is called before the first frame update
+   public float jump;
     public float speed;
     float moveVelocity;
     public AudioClip mAudioPoint;
     AudioSource audioSource;
+    public float boundY = 2.25f;
+
+     CharacterController characterController;
+    private Vector3 moveDirection = Vector3.zero;
+
 
     //untuk berpijak
     bool berpijak = true;
@@ -19,18 +26,12 @@ public class move : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        //jump
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)){
-            if(berpijak){
-                GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x,jump);
-            }
-        }
-
         moveVelocity = 0;
 
         //move
@@ -42,6 +43,27 @@ public class move : MonoBehaviour
         }
     
         GetComponent<Rigidbody2D>().velocity = new Vector2(moveVelocity, GetComponent<Rigidbody2D>().velocity.y);
+
+        var vel = GetComponent<Rigidbody2D>().velocity;
+        if (Input.GetKey(KeyCode.UpArrow)) {
+            vel.y = speed;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow)) {
+            vel.y = -speed;
+        }
+        else {
+            vel.y = 0;
+        }
+        GetComponent<Rigidbody2D>().velocity = vel;
+
+        // var pos = transform.position;
+        // if (pos.y > boundY) {
+        //     pos.y = boundY;
+        // }
+        // else if (pos.y < -boundY) {
+        //     pos.y = -boundY;
+        // }
+        // transform.position = pos;
     }
 
     void IyaBerpijak2D(){
@@ -65,21 +87,8 @@ public class move : MonoBehaviour
             }
     }
     void OnCollisionStay2D (Collision2D other){
-        if(other.gameObject.name == "stopFinish"){
-            SceneManager.LoadScene("Level2");
-        }
-        if(other.gameObject.name == "stopFinish2"){
-            SceneManager.LoadScene("Level3");
-        }
-        if(other.gameObject.name == "stopFinish3"){
-            SceneManager.LoadScene("Level4");
-        }
-        if(other.gameObject.name == "stopFinish4"){
-            SceneManager.LoadScene("Level5");
-        }
-        if(other.gameObject.name == "selesai"){
-            Debug.Log("Quit Game"); //Mencetak output string pada Console
-            Application.Quit();     //Fungsi untuk keluar dari game / aplikasi
+        if(other.gameObject.name == "stopFinishFinal"){
+            SceneManager.LoadScene("End");
         }
     }
 }
